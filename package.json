@@ -1,0 +1,30 @@
+{
+  "name": "taewoong-gas-charge-app",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,green \"npm run dev -w apps/api\" \"npm run dev -w apps/web\"",
+    "build": "npm run build -w packages/shared && npm run build -w apps/api && npm run build -w apps/web",
+    "test": "vitest run --environment node packages/shared/src",
+    "typecheck": "tsc -b",
+    "lint": "eslint . --ext .ts,.tsx",
+    "db:generate": "npm run db:generate -w apps/api",
+    "db:migrate": "npm run db:migrate -w apps/api",
+    "db:seed": "npm run db:seed -w apps/api",
+    "sample:generate": "npm run sample:generate -w apps/api"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "@typescript-eslint/parser": "^7.16.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.3"
+  }
+}

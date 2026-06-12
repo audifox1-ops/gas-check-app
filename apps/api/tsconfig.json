@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "types": ["node"]
+  },
+  "include": ["src", "prisma"],
+  "references": [
+    { "path": "../../packages/shared" }
+  ]
+}

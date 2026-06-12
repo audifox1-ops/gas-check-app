@@ -1,0 +1,15 @@
+-- Optional production hardening for large monthly gas_reading volumes.
+-- Prisma owns the base model. Apply this only on a fresh PostgreSQL database
+-- after reviewing with the DBA, or replace PostgreSQL with TimescaleDB hypertables.
+--
+-- TimescaleDB option:
+--   CREATE EXTENSION IF NOT EXISTS timescaledb;
+--   SELECT create_hypertable('"GasReading"', by_range('"ts"', INTERVAL '1 month'), if_not_exists => TRUE);
+--
+-- Native PostgreSQL partitioning option:
+--   ALTER TABLE "GasReading" PARTITION BY RANGE ("ts");
+--   CREATE TABLE "GasReading_2026_06" PARTITION OF "GasReading"
+--     FOR VALUES FROM ('2026-06-01') TO ('2026-07-01');
+--
+-- Keep the composite index in schema.prisma:
+--   @@index([furnaceId, ts])
