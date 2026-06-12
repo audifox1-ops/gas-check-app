@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "baseUrl": "..",
+    "paths": {
+      "@taewoong/shared": ["packages/shared/src/index.ts"],
+      "@taewoong/shared/*": ["packages/shared/src/*"]
+    }
+  },
+  "include": ["index.ts"]
+}

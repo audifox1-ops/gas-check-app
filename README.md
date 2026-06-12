@@ -73,3 +73,62 @@ npm run build
 ```
 
 샘플 파일은 `npm run sample:generate`로 `samples/`에 생성됩니다.
+
+## Vercel 배포 가이드
+
+### 1단계: 외부 PostgreSQL DB 준비
+
+Vercel은 장기 프로세스를 지원하지 않으므로 DB는 외부 서비스를 사용합니다.
+
+| 서비스 | 무료 플랜 | 특징 |
+|--------|-----------|------|
+| [Neon](https://neon.tech) | ✅ | Serverless PostgreSQL, 빠른 연결 |
+| [Supabase](https://supabase.com) | ✅ | PostgreSQL + 스토리지 |
+| [Railway](https://railway.app) | ✅ (5$ 크레딧) | 간단한 설정 |
+
+DB 생성 후 `DATABASE_URL`을 복사해 둡니다.
+
+### 2단계: Prisma 마이그레이션
+
+```bash
+# 프로덕션 DB에 스키마 적용
+DATABASE_URL="<프로덕션 DB URL>" npx prisma migrate deploy --schema=apps/api/prisma/schema.prisma
+
+# 초기 관리자 계정 생성
+DATABASE_URL="<프로덕션 DB URL>" npm run db:seed
+```
+
+### 3단계: Vercel CLI로 배포
+
+```bash
+# Vercel CLI 설치
+npm i -g vercel
+
+# 배포 (루트 디렉터리에서)
+vercel
+
+# 환경변수 설정
+vercel env add DATABASE_URL
+vercel env add JWT_SECRET
+vercel env add WEB_ORIGIN        # https://<your-project>.vercel.app
+vercel env add NODE_ENV          # production
+
+# 파일 업로드를 S3/R2로 처리할 경우 추가
+# vercel env add UPLOAD_DRIVER   # s3
+# vercel env add S3_ENDPOINT
+# vercel env add S3_BUCKET
+# vercel env add S3_ACCESS_KEY
+# vercel env add S3_SECRET_KEY
+
+# 프로덕션 배포
+vercel --prod
+```
+
+### 4단계: 배포 후 확인
+
+- `https://<your-project>.vercel.app/api/health` — API 헬스체크
+- `https://<your-project>.vercel.app` — 앱 접속 및 로그인
+
+> **참고**: 파일 업로드(PDF, CSV)는 Vercel 서버리스의 임시 `/tmp` 저장소를 사용합니다.  
+> 영구 저장이 필요하면 `UPLOAD_DRIVER=s3`로 설정하고 S3 호환 스토리지(AWS S3, Cloudflare R2)를 연결하세요.
+

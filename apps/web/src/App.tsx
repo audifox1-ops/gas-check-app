@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import {
   BarChart3,
   Database,
@@ -15,13 +16,13 @@ import { useEffect, useMemo, useState } from "react";
 import { api, getToken, login as loginApi, setToken } from "./lib/api";
 import type { User } from "./types";
 import { Button, Input, Panel } from "./components/ui";
-import GasImportPage from "./pages/GasImportPage";
-import ChargeGridPage from "./pages/ChargeGridPage";
-import ScansPage from "./pages/ScansPage";
-import ReadingsPage from "./pages/ReadingsPage";
-import AnalysisPage from "./pages/AnalysisPage";
-import ExportsPage from "./pages/ExportsPage";
-import UsersPage from "./pages/UsersPage";
+const GasImportPage = lazy(() => import("./pages/GasImportPage"));
+const ChargeGridPage = lazy(() => import("./pages/ChargeGridPage"));
+const ScansPage = lazy(() => import("./pages/ScansPage"));
+const ReadingsPage = lazy(() => import("./pages/ReadingsPage"));
+const AnalysisPage = lazy(() => import("./pages/AnalysisPage"));
+const ExportsPage = lazy(() => import("./pages/ExportsPage"));
+const UsersPage = lazy(() => import("./pages/UsersPage"));
 
 type Tab = "charges" | "gas" | "scans" | "readings" | "analysis" | "exports" | "users";
 type NavTab = { id: Tab; label: string; icon: LucideIcon; admin?: boolean };
@@ -160,13 +161,15 @@ export default function App() {
           </div>
         </nav>
         <main className="min-w-0 p-5">
-          {tab === "charges" ? <ChargeGridPage /> : null}
-          {tab === "gas" ? <GasImportPage /> : null}
-          {tab === "scans" ? <ScansPage /> : null}
-          {tab === "readings" ? <ReadingsPage /> : null}
-          {tab === "analysis" ? <AnalysisPage /> : null}
-          {tab === "exports" ? <ExportsPage /> : null}
-          {tab === "users" ? <UsersPage /> : null}
+          <Suspense fallback={<div className="flex h-64 items-center justify-center text-muted">로딩 중...</div>}>
+            {tab === "charges" ? <ChargeGridPage /> : null}
+            {tab === "gas" ? <GasImportPage /> : null}
+            {tab === "scans" ? <ScansPage /> : null}
+            {tab === "readings" ? <ReadingsPage /> : null}
+            {tab === "analysis" ? <AnalysisPage /> : null}
+            {tab === "exports" ? <ExportsPage /> : null}
+            {tab === "users" ? <UsersPage /> : null}
+          </Suspense>
         </main>
       </div>
     </div>
