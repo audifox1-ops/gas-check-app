@@ -141,8 +141,8 @@ export default function ChargeGridPage() {
     const headers = parsed.headers.length
       ? parsed.headers
       : ["차지번호", "사용전", "사용후", "가열로", "작업일자", "교대", "비고"];
-    const mapped = parsed.rows.map((row) => {
-      const obj = Object.fromEntries(headers.map((header, index) => [header, row[index] ?? ""]));
+    const mapped = parsed.rows.map((row: string[]) => {
+      const obj = Object.fromEntries(headers.map((header: string, index: number) => [header, row[index] ?? ""]));
       const furnaceNo = parseFurnaceNo(String(obj["가열로"] ?? obj["호기"] ?? "")) ?? Number(obj["가열로"] || obj["호기"] || 6);
       const gasBefore = parseNullableNumber(String(obj["사용전"] ?? ""));
       const gasAfter = parseNullableNumber(String(obj["사용후"] ?? ""));
